@@ -6,7 +6,7 @@ sudo yum -y update
 # Install required packages
 sudo yum -y install httpd php gcc glibc glibc-common gd gd-devel make net-snmp unzip
 
-# Download and install Nagios 3.0.6
+# Download and install Nagios 4.4.2
 cd /usr/src/
 sudo wget https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.2.tar.gz
 sudo tar zxf nagios-*.tar.gz
