@@ -4,7 +4,7 @@
 sudo yum -y update
 
 # Install required packages
-sudo yum -y install httpd mailx cyrus-imapd cyrus-sasl cyrus-sasl-plain php gcc glibc glibc-common gd gd-devel make net-snmp unzip
+sudo yum -y install mailx cyrus-imapd cyrus-sasl cyrus-sasl-plain httpd php gcc glibc glibc-common gd gd-devel make net-snmp unzip
 
 # Download and install Nagios 4.4.2
 cd /usr/src/
