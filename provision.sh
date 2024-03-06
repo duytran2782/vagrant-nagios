@@ -15,16 +15,15 @@ sudo ./configure
 sudo make all
 sudo make install-groups-users
 sudo usermod -a -G nagios apache
+sudo usermod -aG wheel nagios
 sudo make install
 sudo make install-commandmode
 sudo make install-config
 sudo make install-webconf
 
-sudo systemctl restart httpd
-
 sudo make install-daemoninit
 
-# Set Nagios admin password
+# Set Nagios admin password || sometimes need to run manual just 1 param username
 sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin 123
 
 # Restart httpd
@@ -40,7 +39,7 @@ cd nagios-plugins-release-2.2.1
 sudo ./tools/setup
 sudo ./configure
 sudo make
-sudo make insta
+sudo make install
 
 # Start nagios
 sudo systemctl start nagios
@@ -48,4 +47,9 @@ sudo systemctl status nagios
 
 sudo getenforce
 sudo setenforce 0
-sudo service nagios restart
+
+# Open port 80 in order to connect
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --reload
+
+sudo systemctl restart nagios httpd
