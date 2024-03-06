@@ -6,6 +6,10 @@ sudo yum -y update
 # Install required packages
 sudo yum -y install mailx cyrus-imapd cyrus-sasl cyrus-sasl-plain httpd php gcc glibc glibc-common gd gd-devel make net-snmp unzip
 
+# Open port 80 in order to connect
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --reload
+
 # Download and install Nagios 4.4.2
 cd /usr/src/
 sudo wget https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.2.tar.gz
@@ -47,9 +51,5 @@ sudo systemctl status nagios
 
 sudo getenforce
 sudo setenforce 0
-
-# Open port 80 in order to connect
-sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
-sudo firewall-cmd --reload
 
 sudo systemctl restart nagios httpd
