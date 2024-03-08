@@ -1,5 +1,6 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "generic/centos7"
+  IMAGE_NAME="generic/centos7"
+  config.vm.box = IMAGE_NAME
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 512
@@ -18,20 +19,31 @@ Vagrant.configure("2") do |config|
     monitor.vm.hostname = "monitor"
     monitor.vm.network :private_network, ip: "10.10.10.10"
 
-    monitor.vm.provision "shell", path: "./provision.sh"
+    monitor.vm.provision "shell", path: "./provision-4.4.2.sh"
   end
+# ----- ganglia nrbe ------
+  servers=[
+    {
+      :hostname => "worker1",
+      :box => IMAGE_NAME,
+      :ip => "10.10.10.11"
+    },
+    {
+      :hostname => "worker2",
+      :box => IMAGE_NAME,
+      :ip => "10.10.10.12"
+    }
+  ]
 
-  config.vm.define :worker1 do |worker1|
-    worker1.vm.hostname = "worker1"
-    worker1.vm.network :private_network, ip: "10.10.10.11"
+  servers.each do |machine|
 
-    worker1.vm.provision "shell", path: "./provision.sh"
-  end
+    config.vm.define machine[:hostname] do |node|
+      node.vm.box = machine[:box]
+      node.vm.hostname = machine[:hostname]
+    
+      node.vm.network :private_network, ip: machine[:ip]
 
-  config.vm.define :worker2 do |worker2|
-    worker2.vm.hostname = "worker2"
-    worker2.vm.network :private_network, ip: "10.10.10.12"
-
-    worker2.vm.provision "shell", path: "./provision.sh"
+      node.vm.provision "shell", path: "./provision-3.0.6.sh"
+    end
   end
 end
