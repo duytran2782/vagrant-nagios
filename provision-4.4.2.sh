@@ -9,6 +9,7 @@ sudo yum -y install mailx cyrus-imapd cyrus-sasl cyrus-sasl-plain httpd php gcc 
 # Open port 80 in order to connect
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --reload
+# sudo firewall-cmd --list-all
 
 # Download and install Nagios 4.4.2
 cd /usr/src/
@@ -19,7 +20,7 @@ sudo ./configure
 sudo make all
 sudo make install-groups-users
 sudo usermod -a -G nagios apache
-sudo usermod -aG wheel nagios
+# sudo usermod -aG wheel nagios
 sudo make install
 sudo make install-commandmode
 sudo make install-config
