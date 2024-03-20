@@ -4,7 +4,7 @@
 sudo yum -y update
 
 # Install required packages
-sudo yum -y install mailx cyrus-imapd cyrus-sasl cyrus-sasl-plain httpd php gcc glibc glibc-common gd gd-devel make net-snmp unzip
+sudo yum -y install mailx cyrus-imapd cyrus-sasl cyrus-sasl-plain httpd php gcc glibc glibc-common gd gd-devel make net-snmp unzip openssl openssl-devel
 
 # Open port 80 in order to connect
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
@@ -20,7 +20,7 @@ sudo ./configure
 sudo make all
 sudo make install-groups-users
 sudo usermod -a -G nagios apache
-# sudo usermod -aG wheel nagios
+
 sudo make install
 sudo make install-commandmode
 sudo make install-config
@@ -54,3 +54,39 @@ sudo getenforce
 sudo setenforce 0
 
 sudo systemctl restart nagios httpd
+
+# Install NRPE
+# downloading the Source
+sudo -i
+
+cd /tmp
+wget --no-check-certificate -O nrpe.tar.gz https://github.com/NagiosEnterprises/nrpe/archive/nrpe-4.1.0.tar.gz
+tar xzf nrpe.tar.gz
+
+# compile
+cd /tmp/nrpe-nrpe-4.1.0/
+./configure --enable-command-args
+make all
+
+# create User And Group
+make install-groups-users
+
+# installs the binary files, the NRPE daemon and the check_nrpe plugin
+make install
+make install-config
+
+# update Services File
+echo >> /etc/services
+echo '# Nagios services' >> /etc/services
+echo 'nrpe    5666/tcp' >> /etc/services
+
+make install-init
+systemctl enable nrpe.service
+
+firewall-cmd --zone=public --add-port=5666/tcp
+firewall-cmd --zone=public --add-port=5666/tcp --permanent
+
+sed -i '/^allowed_hosts=/s/$/,10.25.5.2/' /usr/local/nagios/etc/nrpe.cfg
+sed -i 's/^dont_blame_nrpe=.*/dont_blame_nrpe=1/g' /usr/local/nagios/etc/nrpe.cfg
+
+systemctl start nrpe.service
