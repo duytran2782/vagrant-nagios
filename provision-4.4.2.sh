@@ -86,7 +86,7 @@ systemctl enable nrpe.service
 firewall-cmd --zone=public --add-port=5666/tcp
 firewall-cmd --zone=public --add-port=5666/tcp --permanent
 
-sed -i '/^allowed_hosts=/s/$/,10.25.5.2/' /usr/local/nagios/etc/nrpe.cfg
+sed -i '/^allowed_hosts=/s/$/,10.10.10.11,10.10.10.12/' /usr/local/nagios/etc/nrpe.cfg
 sed -i 's/^dont_blame_nrpe=.*/dont_blame_nrpe=1/g' /usr/local/nagios/etc/nrpe.cfg
 
 systemctl start nrpe.service
